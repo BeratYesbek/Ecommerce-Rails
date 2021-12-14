@@ -1,6 +1,8 @@
 module Api
   class CategoriesController < ApplicationController
 
+    before_action :set_category, only: %i[update show destroy]
+
     def index
       @categories = Category.order(created_at: :desc)
       if !@categories.blank?
@@ -11,11 +13,10 @@ module Api
     end
 
     def show
-      cateogry = set_category
-      if !cateogry.blank?
-        render json: cateogry, status: :ok
+      if !@category.blank?
+        render json: @category, status: :ok
       else
-        render json: cateogry, status: :bad_request
+        render json: @category, status: :bad_request
       end
     end
 
@@ -29,17 +30,15 @@ module Api
     end
 
     def update
-      category = set_category
-      if category.update(params_category)
-        render json: category, status: :ok
+      if @category.update(params_category)
+        render json: @category, status: :ok
       else
         render json: "category güncellenemedi", status: :bad_request
       end
     end
 
     def destroy
-      category = set_category
-      if category.destroy
+      if @category.destroy
         render json: "Category silindi", status: :ok
       else
         render json: "category silinemedi", status: :bad_request
