@@ -3,11 +3,13 @@ module Api
 
     before_action :set_product, only: %i[update show destroy]
     after_action :after_action_method, only: %i[create]
+
     def index
       @products = Product.all
       @products.each do |x|
         rails_blob_url(x.product_image)
       end
+
       render json: @products
     end
 
