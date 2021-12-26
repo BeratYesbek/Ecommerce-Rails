@@ -25,8 +25,13 @@ module Api
 
     def create
       @product = Product.create(product_params)
-      @product.save
-      render json: @product
+      if @product.valid?
+        @product.save
+        render json: @product
+      else
+        render json: @product.errors.full_messages, status: 400
+      end
+
     end
 
     def update
@@ -42,12 +47,10 @@ module Api
     def set_product
       @product = Product.find(params[:id])
       print "set product before action methodu çalıştı"
-      byebug
     end
 
     def after_action_method
       print "after action method"
-      byebug
     end
 
     def product_params

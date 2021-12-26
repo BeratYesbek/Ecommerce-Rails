@@ -21,8 +21,10 @@ module Api
     end
 
     def create
+
       @category = Category.create(params_category)
       if @category.save
+        byebug
         render json: @category, status: :ok
       else
         render json: "Category kaydedilemedi", status: :bad_request
@@ -30,6 +32,7 @@ module Api
     end
 
     def update
+      byebug
       if @category.update(params_category)
         render json: @category, status: :ok
       else
