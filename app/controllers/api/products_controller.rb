@@ -6,16 +6,18 @@ module Api
 
     def index
       @products = Product.all
-      @products.each do |x|
-        rails_blob_url(x.product_image)
+      if !@products.blank?
+        @message = "Ürünler listelendi."
+        render :index, status: :ok
+      else
+        @message = "Ürün yok"
+        render :error, status: :bad_request
       end
-
-      render json: @products
     end
 
     def show
-      image = rails_blob_url(@product.product_image)
-      render json: { "image": image, "data": @product }
+      #image = rails_blob_url(@product.product_image)
+      render json: { "data": { product: @product, category: @product.category } }
     end
 
     def get_by_name
@@ -27,9 +29,10 @@ module Api
       @product = Product.create(product_params)
       if @product.valid?
         @product.save
-        render json: @product
+        render :create, status: :ok
       else
-        render json: @product.errors.full_messages, status: 400
+        @message = @product.errors.full_messages
+        render :error, status: :bad_request
       end
 
     end
@@ -54,7 +57,7 @@ module Api
     end
 
     def product_params
-      params.permit(:name, :description, :quantity, :price, :product_image)
+      params.permit(:name, :description, :quantity, :price, :product_image,:category_id)
     end
 
   end

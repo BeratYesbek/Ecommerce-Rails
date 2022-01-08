@@ -4,6 +4,10 @@ class Category < ApplicationRecord
   before_save :before_saved_method
   before_destroy :before_destroy
   after_update :after_update
+
+  has_many :products
+
+
   def after_saved_method
     p 'after save çalıştı'
     #byebug
