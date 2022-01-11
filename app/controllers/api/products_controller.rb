@@ -11,18 +11,26 @@ module Api
         render :index, status: :ok
       else
         @message = "Ürün yok"
-        render :error, status: :bad_request
+        handler_error
       end
     end
 
     def show
-      #image = rails_blob_url(@product.product_image)
-      render json: { "data": { product: @product, category: @product.category } }
+      if !@product.blank?
+        render :show, status: :ok
+      else
+        handler_error
+      end
     end
 
     def get_by_name
-      @products = Product.where(name: params[:name]).order(created_at: desc)
-      render json: @products
+      @products = Product.where(name: params[:name]).order(created_at: :desc)
+      if !@products.blank?
+        render 'index.json.jbuilder', status: :ok
+      else
+        @message = "İsime göre ürün bulunamadı!"
+        handler_error
+      end
     end
 
     def create
@@ -32,19 +40,36 @@ module Api
         render :create, status: :ok
       else
         @message = @product.errors.full_messages
-        render :error, status: :bad_request
+        handler_error
       end
 
     end
 
     def update
-      @product.update(product_params)
-      render json: @product
+      if @product.update(product_params)
+        @message = "Başarıyla Güncellendi."
+        render :update, status: :ok
+      else
+        @message = "Güncellenemedi"
+        handler_error
+      end
+
     end
 
     def destroy
-      @product.destroy
-      render json: "ürün silindi"
+      if @product.destroy
+        render :destroy, status: :ok
+      else
+        @message = "Silinirken bir hata oluştu"
+        handler_error
+      end
+
+    end
+
+    private
+
+    def handler_error
+      render :error, status: :bad_request
     end
 
     def set_product
@@ -57,7 +82,7 @@ module Api
     end
 
     def product_params
-      params.permit(:name, :description, :quantity, :price, :product_image,:category_id)
+      params.permit(:name, :description, :quantity, :price, :product_image, :category_id)
     end
 
   end

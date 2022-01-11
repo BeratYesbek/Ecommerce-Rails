@@ -3,7 +3,10 @@ Rails.application.routes.draw do
 
   namespace "api" do
     resources :products do
-
+      collection do
+        #products/product_id/get_by_name
+        get 'get_by_name'
+      end
     end
     resources :categories
 
