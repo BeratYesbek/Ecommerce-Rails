@@ -2,9 +2,11 @@ module Api
   class CategoriesController < ApplicationController
 
     before_action :set_category, only: %i[update show destroy]
+    before_action :authenticate_user!
 
     def index
       @categories = Category.order(created_at: :desc)
+    
       if !@categories.blank?
         render json: @categories, status: :ok
       else

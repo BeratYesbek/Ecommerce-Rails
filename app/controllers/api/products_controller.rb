@@ -3,6 +3,7 @@ module Api
 
     before_action :set_product, only: %i[update show destroy]
     after_action :after_action_method, only: %i[create]
+    before_action :authenticate_user!
 
     def index
       @products = Product.all
