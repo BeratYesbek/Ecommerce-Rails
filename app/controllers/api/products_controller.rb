@@ -7,6 +7,7 @@ module Api
 
     def index
       @products = Product.all
+      authorize(@products)
       if !@products.blank?
         @message = "Ürünler listelendi."
         render :index, status: :ok
@@ -17,6 +18,7 @@ module Api
     end
 
     def show
+      authorize(@product)
       if !@product.blank?
         render :show, status: :ok
       else
@@ -36,6 +38,7 @@ module Api
 
     def create
       @product = Product.create(product_params)
+      authorize(@product)
       if @product.valid?
         @product.save
         render :create, status: :ok
@@ -47,6 +50,7 @@ module Api
     end
 
     def update
+      authorize(@product)
       if @product.update(product_params)
         @message = "Başarıyla Güncellendi."
         render :update, status: :ok
@@ -58,6 +62,7 @@ module Api
     end
 
     def destroy
+      authorize(@product)
       if @product.destroy
         render :destroy, status: :ok
       else
