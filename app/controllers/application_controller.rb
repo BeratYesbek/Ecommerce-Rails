@@ -3,6 +3,7 @@ class ApplicationController < ActionController::Base
   skip_before_action :verify_authenticity_token
   before_action :configure_permitted_parameters, if: :devise_controller?
   include Pundit
+  include SecurityOperation
   rescue_from Pundit::NotAuthorizedError, with: :user_not_authorized
 
   def user_not_authorized

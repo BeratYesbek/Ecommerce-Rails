@@ -3,6 +3,8 @@ module Api
 
     before_action :set_category, only: %i[update show destroy]
     before_action :authenticate_user!
+    before_action -> {check_user_roles(RoleModule.only_admin_and_superadmin)}, only: %i[update create destroy]
+    before_action -> {check_user_roles(RoleModule.all_roles)}
 
     def index
       @categories = Category.order(created_at: :desc)
@@ -26,7 +28,6 @@ module Api
 
       @category = Category.create(params_category)
       if @category.save
-        byebug
         render json: @category, status: :ok
       else
         render json: "Category kaydedilemedi", status: :bad_request
