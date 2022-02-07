@@ -3,12 +3,15 @@ module Api
 
     before_action :set_product, only: %i[update show destroy]
     after_action :after_action_method, only: %i[create]
-    before_action :authenticate_user!
+    #before_action :authenticate_user!
+    before_action :read_cache, only: %i[index show get_by_name]
+    after_action -> {write_cache(@product)},only: %i[index show get_by_name], if: -> {@is_cached == false}
+    after_action -> {remove_cache("index,show,get_by_name")},only: %i[create update destroy]
 
     def index
-      @products = Product.all
-      authorize(@products)
-      if !@products.blank?
+      @product = Product.all
+      #authorize(@products)
+      if !@product.blank? 
         @message = "Ürünler listelendi."
         render :index, status: :ok
       else
@@ -38,7 +41,7 @@ module Api
 
     def create
       @product = Product.create(product_params)
-      authorize(@product)
+      #authorize(@product)
       if @product.valid?
         @product.save
         render :create, status: :ok
@@ -58,18 +61,16 @@ module Api
         @message = "Güncellenemedi"
         handler_error
       end
-
     end
 
     def destroy
-      authorize(@product)
+      #authorize(@product)
       if @product.destroy
         render :destroy, status: :ok
       else
         @message = "Silinirken bir hata oluştu"
         handler_error
       end
-
     end
 
     private

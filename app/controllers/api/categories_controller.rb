@@ -6,6 +6,10 @@ module Api
     before_action -> {check_user_roles(RoleModule.only_admin_and_superadmin)}, only: %i[update create destroy]
     before_action -> {check_user_roles(RoleModule.all_roles)}
 
+    before_action :read_cache, only: %i[index show]
+    after_action -> {write_cache(@product)},only: %i[index show], if: -> {@is_cached == false}
+    after_action -> {remove_cache("index,show")},only: %i[create update destroy]
+
     def index
       @categories = Category.order(created_at: :desc)
     
