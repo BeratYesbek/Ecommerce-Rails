@@ -4,8 +4,11 @@ class ApplicationController < ActionController::Base
   before_action :configure_permitted_parameters, if: :devise_controller?
   rescue_from Pundit::NotAuthorizedError, with: :user_not_authorized
   include Pundit
-  include SecurityOperation
+  include Security::SecurityOperation
+  include Security::RoleModule
   include Cache::RedisCache
+  
+  
   def user_not_authorized
     @message = "You have no auth"
     render json: {message: @message},status:401

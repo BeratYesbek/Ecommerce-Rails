@@ -1,27 +1,32 @@
 module Api
   class ProductsController < ApplicationController
 
-    before_action :set_product, only: %i[update show destroy]
-    after_action :after_action_method, only: %i[create]
+    #after_action :after_action_method, only: %i[create]
     #before_action :authenticate_user!
+
+    before_action -> {check_user_roles(Security::RoleModule.only_admin_and_superadmin)}, only: %i[update create destroy]
+    before_action -> {check_user_roles(Security::RoleModule.all_roles)}
+    
     before_action :read_cache, only: %i[index show get_by_name]
+    before_action :set_product, only: %i[update show destroy]
+
     after_action -> {write_cache(@product)},only: %i[index show get_by_name], if: -> {@is_cached == false}
-    after_action -> {remove_cache("index,show,get_by_name")},only: %i[create update destroy]
+    after_action -> {remove_cache},only: %i[create update destroy]
 
     def index
       @product = Product.all
-      #authorize(@products)
+#      authorize(@products)
       if !@product.blank? 
         @message = "Ürünler listelendi."
         render :index, status: :ok
       else
         @message = "Ürün yok"
-        handler_error
+        h7andler_error
       end
     end
 
     def show
-      authorize(@product)
+      #authorize(@product)
       if !@product.blank?
         render :show, status: :ok
       else

@@ -1,14 +1,15 @@
 module Api
   class CategoriesController < ApplicationController
 
-    before_action :set_category, only: %i[update show destroy]
     before_action :authenticate_user!
-    before_action -> {check_user_roles(RoleModule.only_admin_and_superadmin)}, only: %i[update create destroy]
-    before_action -> {check_user_roles(RoleModule.all_roles)}
+    before_action -> {check_user_roles(Security::RoleModule.only_admin_and_superadmin)}, only: %i[update create destroy]
+    before_action -> {check_user_roles(Security::RoleModule.all_roles)}
 
     before_action :read_cache, only: %i[index show]
+    before_action :set_category, only: %i[update show destroy]
+
     after_action -> {write_cache(@product)},only: %i[index show], if: -> {@is_cached == false}
-    after_action -> {remove_cache("index,show")},only: %i[create update destroy]
+    after_action -> {remove_cache  },only: %i[create update destroy]
 
     def index
       @categories = Category.order(created_at: :desc)
@@ -39,7 +40,7 @@ module Api
     end
 
     def update
-      byebug
+      byebug 
       if @category.update(params_category)
         render json: @category, status: :ok
       else
