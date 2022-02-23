@@ -11,9 +11,11 @@ module Api
     after_action -> {write_cache(@product)},only: %i[index show], if: -> {@is_cached == false}
     after_action -> {remove_cache  },only: %i[create update destroy]
 
+    after_action :log_file
+
     def index
       @categories = Category.order(created_at: :desc)
-    
+      byebug
       if !@categories.blank?
         render json: @categories, status: :ok
       else

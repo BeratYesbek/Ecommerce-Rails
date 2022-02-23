@@ -1,8 +1,8 @@
 module Api
   class ProductsController < ApplicationController
 
-    #after_action :after_action_method, only: %i[create]
-    #before_action :authenticate_user!
+    after_action :after_action_method, only: %i[create]
+    before_action :authenticate_user!
 
     before_action -> {check_user_roles(Security::RoleModule.only_admin_and_superadmin)}, only: %i[update create destroy]
     before_action -> {check_user_roles(Security::RoleModule.all_roles)}
@@ -13,6 +13,8 @@ module Api
     after_action -> {write_cache(@product)},only: %i[index show get_by_name], if: -> {@is_cached == false}
     after_action -> {remove_cache},only: %i[create update destroy]
 
+    after_action :log_file
+
     def index
       @product = Product.all
 #      authorize(@products)
@@ -21,7 +23,7 @@ module Api
         render :index, status: :ok
       else
         @message = "Ürün yok"
-        h7andler_error
+        handler_error
       end
     end
 

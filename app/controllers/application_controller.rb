@@ -7,8 +7,9 @@ class ApplicationController < ActionController::Base
   include Security::SecurityOperation
   include Security::RoleModule
   include Cache::RedisCache
-  
-  
+  include Log::FileLogger
+  include CustomError::ErrorHandler
+
   def user_not_authorized
     @message = "You have no auth"
     render json: {message: @message},status:401
