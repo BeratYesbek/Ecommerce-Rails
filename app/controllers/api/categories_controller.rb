@@ -12,6 +12,7 @@ module Api
     after_action -> {remove_cache  },only: %i[create update destroy]
 
     after_action :log_file
+    after_action :log_database
 
     def index
       @categories = Category.order(created_at: :desc)

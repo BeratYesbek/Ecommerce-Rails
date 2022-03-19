@@ -1,6 +1,6 @@
 require "test_helper"
 
-class ErrorsControllerTest < ActionDispatch::IntegrationTest
+class HelloJobTest < ActiveJob::TestCase
   # test "the truth" do
   #   assert true
   # end

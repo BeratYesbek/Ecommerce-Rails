@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_02_02_161837) do
+ActiveRecord::Schema.define(version: 2022_02_23_195821) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -45,6 +45,36 @@ ActiveRecord::Schema.define(version: 2022_02_02_161837) do
 
   create_table "categories", force: :cascade do |t|
     t.string "name"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
+
+  create_table "db_log_errors", force: :cascade do |t|
+    t.json "parameters"
+    t.json "current_user"
+    t.date "date_time"
+    t.string "method"
+    t.string "controller_name"
+    t.string "remote_ip"
+    t.string "ip"
+    t.string "request"
+    t.string "request_fullpath"
+    t.string "exception"
+    t.string "exception_detail"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
+
+  create_table "db_logs", force: :cascade do |t|
+    t.json "parameters"
+    t.json "current_user"
+    t.date "date_time"
+    t.string "method"
+    t.string "controller_name"
+    t.string "remote_ip"
+    t.string "ip"
+    t.string "request"
+    t.string "request_fullpath"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
   end
